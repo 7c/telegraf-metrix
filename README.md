@@ -8,6 +8,7 @@ Planning to support TCP by next versions
 
 ## Install
 
+```composer require taskinosman/telegraf-metrix @dev```
 
 ## Telegraf Configuration
 Enable [[inputs.socket_listener]] inside telegraf.conf with a service address like udp://:8094 to enable UDP from 0.0.0.0. You may also choose to activate UDP for 127.0.0.1 which is recommended way
