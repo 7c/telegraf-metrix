@@ -1,0 +1,8 @@
+{
+    "name": "taskinosman/telegraf-metrix",
+    "description": "Telegraf metrics ucp/tcp collector for php",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {}
+}
