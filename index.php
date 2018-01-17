@@ -79,7 +79,7 @@ class metrix {
             $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
             //cpu_load_short,host=server01,region=us-west value=1
             if ($this->scheme==='udp') {
-                echo ">$payload\n";
+                // echo ">$payload\n";
                 socket_sendto($sock, $payload, strlen($payload), 0, $this->host, $this->port);
                 socket_close($sock);
                 return true;

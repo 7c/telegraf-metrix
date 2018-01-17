@@ -2,7 +2,6 @@
     "name": "taskinosman/telegraf-metrix",
     "version" : "0.0.6",
     "description": "Telegraf metrics ucp/tcp collector for php",
-    "type": "library",
     "keywords": ["telegraf"],
     "license": "MIT",
     "minimum-stability": "dev",
