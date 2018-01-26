@@ -30,9 +30,7 @@ class metrix {
     private function hearthbeat($appname,$interval) {
         if (time()-$this->lastHearthbeat>$interval)
         {
-            // echo "hearthbeat $appname $interval\n";
-            echo $this->send('pulse',['appname'=>$appname],['lastSignal'=>time(),'heartbeat'=>1]);
-            echo "\n";
+            $this->send('pulse',['appname'=>$appname],['lastSignal'=>time(),'heartbeat'=>1]);
             $this->lastHearthbeat=time();
         }
     }
