@@ -20,32 +20,40 @@ Enable [[inputs.socket_listener]] inside telegraf.conf with a service address li
 - tag keys, tag values: ^[a-zA-Z0-9_,. =]+$
 - tags are optional
 - fields are optional
+- send() returns line protocol formatted or false by error
 - time will be stamped from telegraf (for now)
 
 
 ```
-$m = new metrix("udp://127.0.0.1");
+$metrix = new metrix("udp://127.0.0.1");
 
 while(true) {
 
-    $m->send('Random Generator',
+    $metrix->send('Random Generator',
             ['type'=>'random'],
             ['measurement 1 to 100'=>rand(1,100),'measurement 1 to 500'=>rand(1,500)]
     );
 
-    $m->send('Memory',
+    $metrix->send('Memory',
             ['from'=>'php'],
             ['usage'=>memory_get_usage(),'peak'=>memory_get_peak_usage()]
     );
 
-    $m->send('Mixed',
+    $metrix->send('Mixed',
             ['from'=>'key.subkey.lastkey'],
             time()
     );
 
-
     sleep(1);
 }
+```
+## Pulse Feature (alpha)
+Basic pulse/bearthbeat function included. This function will send hearthbeats from the application with with given $appname as identifier to telegraf using udp. These pulses can be used to detect anomalies or down times of your application.
+
+Given example will send a pulse/hearthbeat to telegraf every 15 seconds automatically
+```
+$metrix = new metrix("udp://127.0.0.1");
+$metrix->pulseEnable('example.php',15);
 ```
 
 

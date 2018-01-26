@@ -3,6 +3,7 @@ class metrix {
     private $telegraf;
     private $scheme;
     private $host;
+    private $lastHearthbeat;
     function __construct($telegraf="udp://127.0.0.1:8094") {
         $parsed = parse_url($telegraf);
         if (!$parsed) throw new Exception("Please define a valid target");
@@ -11,10 +12,30 @@ class metrix {
         $this->host = $parsed['host'];
         $this->port = array_key_exists('port',$parsed) ? $parsed['port'] : '8094';
         $this->telegraf = $telegraf;
+        declare(ticks=1);
+        $lastHearthbeat=time();
     }
 
+    public static function time(callable $call){
+        $started = microtime(true);
+        $call();
+        return microtime(true)-$started;
+    }
 
+    // interval in seconds
+    public function pulseEnable($appname,$interval=15) {
+        register_tick_function(array(&$this, 'hearthbeat'),$appname,$interval);
+    }
 
+    private function hearthbeat($appname,$interval) {
+        if (time()-$this->lastHearthbeat>$interval)
+        {
+            // echo "hearthbeat $appname $interval\n";
+            echo $this->send('pulse',['appname'=>$appname],['lastSignal'=>time(),'heartbeat'=>1]);
+            echo "\n";
+            $this->lastHearthbeat=time();
+        }
+    }
 
     // The key is the measurement name and any optional tags separated by commas. 
     // Measurement names must escape commas and spaces. 
@@ -80,9 +101,10 @@ class metrix {
             //cpu_load_short,host=server01,region=us-west value=1
             if ($this->scheme==='udp') {
                 // echo ">$payload\n";
+                // echo $this->host.":".$this->port."\n";
                 socket_sendto($sock, $payload, strlen($payload), 0, $this->host, $this->port);
                 socket_close($sock);
-                return true;
+                return $payload;
             }
             throw new Exception("not supported scheme {$this->scheme}");
                 
