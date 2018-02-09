@@ -1,4 +1,5 @@
 <?php
+declare(ticks=1);
 class metrix {
     private $telegraf;
     private $scheme;
@@ -12,8 +13,7 @@ class metrix {
         $this->host = $parsed['host'];
         $this->port = array_key_exists('port',$parsed) ? $parsed['port'] : '8094';
         $this->telegraf = $telegraf;
-        declare(ticks=1);
-        $lastHearthbeat=time();
+        $this->lastHearthbeat=0;
     }
 
     public static function time(callable $call){
@@ -45,7 +45,7 @@ class metrix {
     // Floats are numeric values that are not followed by a trailing i. (e.g. 1, 1.0, -3.14, 6.0e5, 10).
     // Boolean values indicate true or false. Valid boolean strings are (t, T, true, True, TRUE, f, F, false, False and FALSE).
     // Strings are text values. All string values must be surrounded in double-quotes ". If the string contains a double-quote, it must be escaped with a backslash, e.g. \".
-    public function line(string $measurement,array $tags,$fields) {
+    public function line($measurement,$tags,$fields) {
         if (preg_match("/[^a-zA-Z0-9_, .]/",$measurement)>0) return false;
         if (is_array($fields)) foreach($fields as $k=>$v) if (preg_match("/[^a-zA-Z0-9_, .]/",$k)>0) return false;
         if (is_array($tags)) foreach($tags as $k=>$v)   if (preg_match("/[^a-zA-Z0-9_, .]/",$k)>0) return false;
@@ -92,7 +92,7 @@ class metrix {
         $line = $measurement.$tagsPart.$fieldsPart;
         return $line;
     }
-    public function send(string $measurement,array $tags,$fields) {
+    public function send($measurement,$tags,$fields) {
         $payload = $this->line($measurement,$tags,$fields);
         if ($payload) {
             $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
