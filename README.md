@@ -1,6 +1,6 @@
 # Telegraf Metrix
 
-Supports telegraf line protocol and sends metrics over udp (for now). Line protocol uses nano second precisious timestamp, we will let this stamping telegraf for now
+Supports telegraf line protocol and sends metrics over udp (for now). Line protocol uses nanosecond precision timestamp. You can add nanosecond timestamp as last parameter optionally since the version 0.0.14. If you omit this timestamp telegraf will add it based on its local time to your data. Sometimes you may want to add this timestamp to send data from the past. Timestamp is nano seconds precision. PHP does only understand microsecond. You may want to *1000 this value to convert to nano seconds
 
 I preper UDP protocol because php is stateless and not able to run async functions natively. I do not want to block my operations with TCP which has a handshake and many checks.
 
@@ -21,7 +21,7 @@ Enable [[inputs.socket_listener]] inside telegraf.conf with a service address li
 - tags are optional
 - fields are optional
 - send() returns line protocol formatted or false by error
-- time will be stamped from telegraf (for now)
+- timestamp is optional,telegraf does this job for you if you omit
 
 
 ```
